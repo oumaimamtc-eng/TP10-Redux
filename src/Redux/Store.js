@@ -1,17 +1,14 @@
-import { createStore,combineReducers,applyMiddleware} from "redux";
-import authReducer from "./Reducers/authReducer"; 
-import productsReducer from "./Reducers/productsReducer";
-import cartReducer from "./Reducers/cartReducer";
-import { thunk } from "redux-thunk";
-import loggerMiddleware from "./middlewares/loggerMiddleware";
+import { configureStore } from "@reduxjs/toolkit";
+import authSlice from './Reducers/authSlice'
+import productsReducer from "./Reducers/productslice";
+import cartSlice from "./Reducers/cartSlice";
 
-const rootReducer=combineReducers({
-     auth:authReducer,
-     products:productsReducer,
-     cart:cartReducer,
+const store = configureStore({
+  reducer: {
+    auth: authSlice,
+    products: productsReducer,
+    cart: cartSlice,
+  },
 });
-const store=createStore(
-     rootReducer,
-     applyMiddleware(loggerMiddleware,thunk)
-);
+
 export default store;

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { addCart } from "../Redux/Reducers/cartSlice";
 
 function AddProduct() {
   const [product, setProduct] = useState({});
@@ -8,7 +9,7 @@ function AddProduct() {
   const navigate = useNavigate();
 
   const addProduct = () => {
-    dispatch({ type: "ADD_PRODUCT", payload: { ...product, id: Date.now() } });
+    dispatch( addCart({ ...product, id: Date.now() }));
     navigate("/products");
   };
 

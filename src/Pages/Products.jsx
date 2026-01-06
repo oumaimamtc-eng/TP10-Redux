@@ -1,36 +1,37 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProducts } from "../Redux/ActionCreators/productCreators";
-import { Link } from "react-router-dom";
 import { FaShoppingCart, FaEye } from "react-icons/fa";
 import ProductDetails from "./ProductDetail";
 import { useState } from "react";
 import AddProduct from "./AddProduct";
+import { fetchProductsSuccess,setCategory ,setMaxPrice} from "../Redux/Reducers/productslice";
+import {addCart} from '../Redux/Reducers/cartSlice';
+import axios from "axios";
 
 function Products() {
   const dispatch = useDispatch();
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [hide,setHide]=useState(false);
-  const { filteredProducts, loading, error } = useSelector(
-    (state) => state.products
-  );
+  const { products,filteredProducts, selectedCategory, maxPrice } = useSelector(
+  state => state.products);
+  useEffect(()=>{axios
+    .get("https://api.escuelajs.co/api/v1/products")
+    .then((response)=>{
+      if(response.status===200){dispatch(fetchProductsSuccess(response.data || []))
+      } else{
+        alert('Erreur')
+      }
+    })
+  },[]);
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 4;
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = filteredProducts.slice(
+  const currentProducts = products.slice(
     indexOfFirstProduct,
     indexOfLastProduct
   );
-
-  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-
-  useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
-
-  if (loading) return <h3>Chargement...</h3>;
-  if (error) return <h3>Erreur : {error}</h3>;
+  const totalPages = Math.ceil(products.length / productsPerPage);
 
   return (
     <section className="section" id="Products">
@@ -38,18 +39,22 @@ function Products() {
         <div className="cards-grid">
     <div className="container">
       <button onClick={()=>setHide(true)}> Créer un produit </button>
-      <h3>Total produits : {filteredProducts.length}</h3>
+      <h3>Total produits : {products.length}</h3>
       <div className="filters">
-        <select onChange={e => dispatch({ type:"FILTER_BY_CATEGORY", payload: e.target.value })}>
+        <select onChange={e => {dispatch( setCategory (e.target.value));
+          setCurrentPage(1)}
+        }>
           <option value="all">All</option>
-          <option value="Electronics">Electronics</option>
-          <option value="Clothes">Clothes</option>
+          <option value="Electronics"></option>
+          <option value="Clothes"></option>
         </select>
 
         <input
           type="number"
           placeholder="Max price"
-          onChange={e => dispatch({ type:"FILTER_BY_PRICE", payload: e.target.value })}
+          onChange={e => {dispatch( setMaxPrice(e.target.value));
+            setCurrentPage(1);
+          }}
         />
     </div>
       <div className="products-grid">
@@ -66,7 +71,7 @@ function Products() {
             <div className="product-actions">
               <button
                 onClick={() =>
-                  dispatch({ type: "ADD_CART", payload: product })
+                  dispatch(addCart(product))
                 }
               >
                <FaShoppingCart/>
@@ -96,7 +101,6 @@ function Products() {
           {index + 1}
         </button>
       ))}
-
       <button
         disabled={currentPage === totalPages}
         onClick={() => setCurrentPage(currentPage + 1)}

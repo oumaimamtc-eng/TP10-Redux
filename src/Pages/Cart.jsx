@@ -1,10 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
 import { FaTrash, FaPlus, FaMinus } from "react-icons/fa";
+import { deleteFromCart,quantityPlus,quantityMoin } from "../Redux/Reducers/cartSlice";
 
 function Cart() {
   const dispatch = useDispatch();
   const items = useSelector(state => state.cart.items);
-
+  console.log(deleteFromCart, quantityPlus, quantityMoin);
   const total = items.reduce(
     (sum, item) => sum + item.product.price * item.quantity,
     0
@@ -26,7 +27,7 @@ function Cart() {
           <div className="qty-controls">
             <button
               onClick={() =>
-                dispatch({ type: "QUANTITY_MOIN", payload: item.product.id })
+                dispatch(quantityMoin(item.product.id ))
               }
             >
               <FaMinus />
@@ -36,7 +37,7 @@ function Cart() {
 
             <button
               onClick={() =>
-                dispatch({ type: "QUANTITY_PLUS", payload: item.product.id })
+                dispatch(quantityPlus(item.product.id ))
               }
             >
               <FaPlus />
@@ -46,12 +47,7 @@ function Cart() {
           <button
             className="delete-btn"
             onClick={() =>
-              dispatch({
-                type: "DELET_FROM_CART",
-                payload: item.product.id
-              })
-            }
-          >
+              dispatch(deleteFromCart(item.product.id))}>
             <FaTrash />
           </button>
         </div>

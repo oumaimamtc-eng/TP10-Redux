@@ -1,6 +1,6 @@
-export const fetchProducts = () => {
+/*export const fetchProducts = () => {
   return async (dispatch) => {
-    dispatch({ type: "FETCH_PRODUCTS_START" });
+    dispatch({ type: "fetchProductsStart" });
 
     try {
       const response = await fetch(
@@ -9,14 +9,14 @@ export const fetchProducts = () => {
       const data = await response.json();
 
       dispatch({
-        type: "FETCH_PRODUCTS_SUCCESS",
+        type: "fetchProductsSuccess",
         payload: data,
       });
     } catch (error) {
       dispatch({
-        type: "FETCH_PRODUCTS_ERROR",
+        type: "fetchProductsError",
         payload: error.message,
       });
     }
   };
-};
+};*/
